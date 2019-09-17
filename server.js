@@ -7,8 +7,6 @@ const axios = require("axios");
 // Initialize Express
 const app = express();
 
-//const db = require('./models');
-
 const PORT = 8080;
 
 
@@ -17,6 +15,21 @@ app.use(express.json());
 
 // Set up a static folder
 app.use(express.static('public'));
+
+// Database configuration
+var databaseUrl = "scraperdb";
+var collections = ["articles"];
+
+// Connect to the Mongo DB
+mongoose.connect("mongodb://localhost/scraperdb", { useNewUrlParser: true });
+
+////var db = mongoose(databaseUrl, collections);
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  console.log("we're connected!");
+});
 
 
 // Routes
@@ -34,11 +47,7 @@ app.get("/scrape", function (req, res) {
     // Create an array to hold results of scraping
     var pgresults = [];
 
-    //console.log(response.data);
-
     // Use cheerio selectors to find desired web page components
-
-    //$(".stage ul h2 li").each(function (i, element) {
 
     $(".latestScrollItems h3").each(function (i, element) {
 
@@ -65,15 +74,23 @@ app.get("/scrape", function (req, res) {
 
   });
 
-  // Send a message to the client
+  //db.articles.insert(pgresults, function (err) {
+  //  if (err) return res.json({ err: err.message });
+
+  //Send a message to the client
   res.send("Scrape Complete");
 
+  $("#root").append(pgresults);
+
+  //});
+
+
+
+
+  // Start the server
+  app.listen(PORT, function () {
+    console.log("App running on port " + PORT + "!");
+  });
+
 });
 
-
-
-
-// Start the server
-app.listen(PORT, function () {
-  console.log("App running on port " + PORT + "!");
-});
