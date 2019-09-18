@@ -7,8 +7,7 @@ const axios = require("axios");
 // Initialize Express
 const app = express();
 
-const PORT = 8080;
-
+const PORT = 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -17,19 +16,19 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Database configuration
-var databaseUrl = "scraperdb";
-var collections = ["articles"];
+//var databaseUrl = "scraperdb";
+//var collections = ["articles"];
 
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/scraperdb", { useNewUrlParser: true });
 
 ////var db = mongoose(databaseUrl, collections);
 
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-  console.log("we're connected!");
-});
+//var db = mongoose.connection;
+//db.on('error', console.error.bind(console, 'connection error:'));
+//db.once('open', function () {
+//  console.log("we're connected!");
+//});
 
 
 // Routes
@@ -78,19 +77,17 @@ app.get("/scrape", function (req, res) {
   //  if (err) return res.json({ err: err.message });
 
   //Send a message to the client
-  res.send("Scrape Complete");
-
-  $("#root").append(pgresults);
+  //  res.send("Scrape Complete");
 
   //});
 
 
 
 
-  // Start the server
-  app.listen(PORT, function () {
-    console.log("App running on port " + PORT + "!");
-  });
 
 });
 
+// Start the server
+app.listen(PORT, function () {
+  console.log("App running on port " + PORT + "!");
+});
