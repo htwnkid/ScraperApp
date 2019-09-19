@@ -10,7 +10,7 @@ class Database {
 
     _connect() {
 
-        mongoose.connect("mongodb://${localhost}/${scraperdb}"
+        mongoose.connect(`mongodb://${localhost}/${scraperdb}`)
 
             .then(() => {
                 console.log('Database connection successful')
@@ -18,7 +18,7 @@ class Database {
             .catch(err => {
                 console.error('Database connection error')
             })
-  }
+    }
 }
 
 module.exports = new Database();
