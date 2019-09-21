@@ -3,6 +3,7 @@ const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
 const cheerio = require("cheerio");
 const axios = require("axios");
+const db = require('./src/models')
 
 // Initialize Express
 const app = express();
@@ -15,19 +16,11 @@ app.use(express.json());
 // Set up a static folder
 app.use(express.static('public'));
 
-// Database configuration
-var databaseUrl = "scraperdb";
-var collections = ["articles"];
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/scraperdb", { useNewUrlParser: true });
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scraperdb";
 
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-  console.log("we're connected!");
-});
-
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // Routes
 
@@ -68,14 +61,13 @@ app.get("/scrape", function (req, res) {
     });
 
     console.log(pgresults);
-    res.send(pgresults);
 
-    db.articles.insert(pgresults.title, function (err) {
+    db.Articles.insertMany(pgresults, function (err, data) {
 
       if (err) return res.json({ err: err.message });
 
       //Send a message to the client
-      res.send("Scrape Complete");
+      res.send(data);
 
     });
 
